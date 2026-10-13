@@ -124,7 +124,7 @@ module lab_top
     // without using "?" operation, "if", "case" or a bit selection.
     // Use only operations "&", "|", "~" and parenthesis, "(" and ")".
 
-    wire mux4 = 1'b0;
+    wire mux4 = (sel & a) | (~sel & b);
 
     //------------------------------------------------------------------------
 
@@ -145,7 +145,19 @@ module lab_top
     wire mux5 = table5 [{ sel, a, b }];
 
     // Exercise 2: Change the table to get the correct result by doing
-    // wire mux5_2 = table5_2 [{ a, b, sel }];
+    wire [0:7] table5_2 =
+    {
+        1'b0,
+        1'b0,
+        1'b1,
+        1'b0,
+        1'b0,
+        1'b1,
+        1'b1,
+        1'b1
+    };
+
+     wire mux5_2 = table5_2 [{ a, b, sel }];
 
     //------------------------------------------------------------------------
 
@@ -256,7 +268,7 @@ module lab_top
 
     //------------------------------------------------------------------------
 
-    `ifdef SYNOPSYS_CADENCE_MENTOR
+        `ifdef SYNOPSYS_CADENCE_MENTOR
 
     // This syntax probably works only with Synopsys VCS, Cadence Xselium
     // and QuestaSim from Siemens EDA (former Mentor Graphics)
@@ -278,12 +290,28 @@ module lab_top
 
     // Exercise 3: Change the table to get the correct result by doing
     // wire mux11_2 = table11_2 [sel][b][a];
+    logic table11_2 [0:1][0:1][0:1] =
+    '{
+        '{
+            '{1'b0, 1'b0}, // s=0, b=0, a=0/1
+            '{1'b1, 1'b1}  // s=0, b=1, a=0/1
+        },
+
+        '{
+            '{1'b0, 1'b1}, // s=1, b=0, a=0/1
+            '{1'b0, 1'b1}  // s=1, b=1, a=0/1
+        }
+    };
+
+    wire mux11_2 = table11_2 [sel][b][a];
 
     `else
 
-    wire mux11 = mux0;
+    wire mux11   = mux0;
+    wire mux11_2 = mux0; 
 
     `endif
+
 
     //------------------------------------------------------------------------
 
@@ -291,7 +319,7 @@ module lab_top
 
     wire [11:0] all_muxes
         = { mux11 , mux10 , mux9 , mux8 ,
-            mux7  , mux6  , mux5 , mux4 ,
+            mux7  , mux6  , mux5_2 , mux11_2 ,
             mux3  , mux2  , mux1 , mux0 };
 
     assign led = w_led' (all_muxes);
