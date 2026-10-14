@@ -80,7 +80,7 @@ module lab_top
     //  |     |
     //   --d--  h
 
-    typedef enum bit [7:0]
+    /* typedef enum bit [7:0]
     {
         F     = 8'b1000_1110,
         P     = 8'b1100_1110,
@@ -88,34 +88,60 @@ module lab_top
         A     = 8'b1110_1110,
         space = 8'b0000_0000
     }
-    seven_seg_encoding_e;
+    seven_seg_encoding_e; */
 
-    assign abcdefgh = key [0] ? P : F;
+    /* assign abcdefgh = key [0] ? P : F;
     assign digit    = w_digit' (key [1] ? 2'b10 : 2'b01);
-
+ */
     // Exercise 1: Display the first letters
     // of your first name and last name instead.
+   /*  typedef enum bit [7:0]
+    {
+        S    = 8'b1011_0110,
+        A    = 8'b1110_1110,
+        space = 8'b0000_0000
+    }
+    seven_seg_encoding_e;
 
-    // assign abcdefgh = ...
-    // assign digit    = ...
+
+     assign abcdefgh = key [0] ? S : A;
+     assign digit    = w_digit' (key[1] ? 2'b10 : 2'b01); */
 
     // Exercise 2: Display letters of a 4-character word
     // using this code to display letter of FPGA as an example
 
-    /*
+     //   --a--
+    //  |     |
+    //  f     b
+    //  |     |
+    //   --g--
+    //  |     |
+    //  e     c
+    //  |     |
+    //   --d--  h
+
+     typedef enum bit [7:0]
+    {
+        L     = 8'b0001_1100,
+        O     = 8'b1111_1100,
+        U     = 8'b0111_1100,
+        E     = 8'b1001_1110,
+        space = 8'b0000_0000
+    }
+    seven_seg_encoding_e;
     seven_seg_encoding_e letter;
 
     always_comb
       case (4' (key))
-      4'b1000: letter = F;
-      4'b0100: letter = P;
-      4'b0010: letter = G;
-      4'b0001: letter = A;
+      4'b1000: letter = L;
+      4'b0100: letter = O;
+      4'b0010: letter = U;
+      4'b0001: letter = E;
       default: letter = space;
       endcase
 
     assign abcdefgh = letter;
     assign digit    = w_digit' (key);
-    */
+    
 
 endmodule
