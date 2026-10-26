@@ -82,12 +82,16 @@ module lab_top
 
     always_ff @ (posedge clk or posedge rst)
         if (rst)
-            period <= 32' ((min_period + max_period) / 2);
-        else if (key [0] & period != max_period)
-            period <= period + 32'h1;
-        else if (key [1] & period != min_period)
-            period <= period - 32'h1;
-
+            period <= 32' (50*1000*1000);
+        else if (pressed [0] & ( (period * 2) <= max_period))
+             period <= period * 2 ; 
+        else if (pressed [0] & ( (period * 2) > max_period))
+             period <=  max_period  ; 
+         else if (pressed [1] & ( (period / 2) >= min_period) )
+             period <= period / 2; 
+        else if (pressed [1] & ( (period / 2) < min_period))
+             period <= min_period; 
+        
     logic [31:0] cnt_1;
 
     always_ff @ (posedge clk or posedge rst)
@@ -129,5 +133,15 @@ module lab_top
     //
     // 1. Double the frequency when one key is pressed and released.
     // 2. Halve the frequency when another key is pressed and released.
+    wire [1:0] keys = key[1:0];
+    logic [1:0] keys_r;
+
+    always_ff @ (posedge clk or posedge rst)
+        if (rst)
+            keys_r <= '0;
+        else
+            keys_r <= keys;
+
+    wire [1:0] pressed = ~keys & keys_r;
 
 endmodule
